@@ -1,6 +1,37 @@
 <?
 global $is404, $isIndex, $isForm, $isWidePage, $isBlog, $isCatalog, $isHideLeftBlock, $bActiveTheme, $bShowCallBackBlock, $bShowQuestionBlock, $bShowReviewBlock, $isBasketPage, $bHideLeftBlockByHeader;
 
+//Настройка редиректов
+if (strripos($_SERVER['SERVER_NAME'], 'wwww.') !==false) {
+    $_SERVER['SERVER_NAME'] = str_replace('www.', '', $_SERVER['SERVER_NAME']);
+    header('Location: http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'], true, 301);
+    exit();
+}
+
+if ($_SERVER['REQUEST_URI'] != strtolower($_SERVER['REQUEST_URI'])) {
+    if (!file_exists($_SERVER['REQUEST_URI'])){
+        header('Location: http://' . $_SERVER['SERVER_NAME'] . strtolower($_SERVER['REQUEST_URI']), true, 301);
+        exit();
+    }
+}
+if (strripos($_SERVER['REQUEST_URI'], '/index.php') !==false) {
+    $_SERVER['REQUEST_URI'] = str_replace('/index.php', '/', $_SERVER['REQUEST_URI']);
+    header('Location: http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'], true, 301);
+    exit();
+}
+if (strripos($_SERVER['REQUEST_URI'], '/index.html') !==false) {
+    $_SERVER['REQUEST_URI'] = str_replace('/index.html', '/', $_SERVER['REQUEST_URI']);
+    header('Location: http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'], true, 301);
+    exit();
+}
+if (strripos($_SERVER['REQUEST_URI'], '//') !==false) {
+    while (strripos($_SERVER['REQUEST_URI'], '//') !==false) {
+        $_SERVER['REQUEST_URI'] = str_replace('//', '/', $_SERVER['REQUEST_URI']);
+    }
+    header('Location: http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'], true, 301);
+    exit();
+}
+
 $is404 = (defined("ERROR_404") && ERROR_404 === "Y");
 $isIndex = CMax::IsMainPage();
 $isForm = CMax::IsFormPage();
